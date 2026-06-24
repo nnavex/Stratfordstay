@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stratford Retreat — A Family Home in Stratford, Ontario</title>
+<meta name="description" content="A 4-bedroom family retreat in Stratford, Ontario. Self check-in, free parking, walk to the Avon River and the Festival theatres. Guest favorite, 4.74 stars.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Fraunces:ital,opsz,wght@1,9..144,400..600&family=Inter:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2430;
+    --ink-soft:#2C3A4D;
+    --parchment:#F2EDE1;
+    --paper:#FAF8F3;
+    --teal:#3D6B66;
+    --teal-deep:#2A4B47;
+    --brass:#B8935A;
+    --brass-bright:#CBA876;
+    --line: rgba(27,36,48,0.14);
+    --max: 1120px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{max-width:100%; display:block;}
+  a{color:inherit;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+
+  .eyebrow{
+    font-family:'Courier Prime', monospace;
+    text-transform:uppercase;
+    letter-spacing:0.18em;
+    font-size:0.72rem;
+    color:var(--brass);
+  }
+
+  .wrap{
+    max-width:var(--max);
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:50;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px 28px;
+    background:transparent;
+    transition:background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
+  }
+  .nav.scrolled{
+    background:rgba(250,248,243,0.92);
+    backdrop-filter:blur(8px);
+    padding:14px 28px;
+    box-shadow:0 1px 0 var(--line);
+  }
+  .nav-mark{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.15rem;
+    color:var(--paper);
+    transition:color 0.4s ease;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .nav.scrolled .nav-mark{ color:var(--ink); }
+  .nav-mark .dot{ width:7px; height:7px; border-radius:50%; background:var(--brass); display:inline-block;}
+  .nav-links{ display:flex; gap:30px; align-items:center;}
+  .nav-links a{
+    font-size:0.86rem;
+    text-decoration:none;
+    color:var(--paper);
+    opacity:0.88;
+    transition:color 0.4s ease, opacity 0.2s ease;
+  }
+  .nav.scrolled .nav-links a{ color:var(--ink); }
+  .nav-links a:hover{ opacity:1; }
+  .nav-cta{
+    font-family:'Courier Prime', monospace;
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    padding:9px 18px;
+    border:1px solid var(--paper);
+    border-radius:2px;
+    transition:all 0.3s ease;
+    text-decoration:none;
+  }
+  .nav.scrolled .nav-cta{ border-color:var(--ink); }
+  .nav-cta:hover{ background:var(--paper); color:var(--ink); }
+  .nav.scrolled .nav-cta:hover{ background:var(--ink); color:var(--paper); }
+  .nav-toggle{ display:none; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    background:linear-gradient(160deg, var(--ink) 0%, var(--ink-soft) 55%, #233044 100%);
+    color:var(--paper);
+    overflow:hidden;
+    padding-top:90px;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 64px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 64px);
+    pointer-events:none;
+  }
+  .hero-grid{
+    position:relative;
+    z-index:2;
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:50px;
+    align-items:center;
+    width:100%;
+  }
+  .playbill{
+    border:1px solid rgba(242,237,225,0.35);
+    padding:6px 14px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:28px;
+    font-family:'Courier Prime', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--brass-bright);
+    opacity:0;
+    animation:fadeUp 0.8s ease 0.15s forwards;
+  }
+  .playbill .sep{ color:rgba(242,237,225,0.4); }
+  .hero h1{
+    font-size:clamp(2.6rem, 5.6vw, 4.6rem);
+    line-height:1.04;
+    color:var(--paper);
+    opacity:0;
+    animation:fadeUp 0.9s ease 0.3s forwards;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--brass-bright);
+    font-weight:500;
+  }
+  .hero-sub{
+    margin-top:22px;
+    max-width:460px;
+    font-size:1.05rem;
+    line-height:1.65;
+    color:rgba(242,237,225,0.82);
+    opacity:0;
+    animation:fadeUp 0.9s ease 0.45s forwards;
+  }
+  .hero-meta{
+    display:flex;
+    gap:28px;
+    margin-top:32px;
+    flex-wrap:wrap;
+    opacity:0;
+    animation:fadeUp 0.9s ease 0.6s forwards;
+  }
+  .hero-meta .stat{ display:flex; flex-direction:column; gap:2px; }
+  .hero-meta .stat b{ font-family:'Fraunces', serif; font-size:1.5rem; font-weight:600; }
+  .hero-meta .stat span{ font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:rgba(242,237,225,0.6);}
+  .hero-ctas{
+    display:flex;
+    gap:16px;
+    margin-top:38px;
+    flex-wrap:wrap;
+    opacity:0;
+    animation:fadeUp 0.9s ease 0.75s forwards;
+  }
+
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(16px);}
+    to{ opacity:1; transform:translateY(0);}
+  }
+
+  /* Ticket-stub CTA — signature element */
+  .ticket-btn{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    gap:14px;
+    background:var(--brass);
+    color:var(--ink);
+    text-decoration:none;
+    padding:14px 26px;
+    font-family:'Courier Prime', monospace;
+    font-size:0.82rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    border-radius:1px;
+    transition:transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    box-shadow:0 6px 18px rgba(184,147,90,0.0);
+  }
+  .ticket-btn::before, .ticket-btn::after{
+    content:"";
+    position:absolute;
+    width:14px; height:14px;
+    background:var(--ink-soft);
+    border-radius:50%;
+    top:50%;
+    transform:translateY(-50%);
+  }
+  .hero .ticket-btn::before, .hero .ticket-btn::after{ background:var(--ink); }
+  .ticket-btn::before{ left:-7px; }
+  .ticket-btn::after{ right:-7px; }
+  .ticket-btn:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(184,147,90,0.35);}
+  .ticket-btn .stub-line{
+    border-left:1px dashed rgba(27,36,48,0.35);
+    padding-left:12px;
+    font-weight:700;
+  }
+
+  .ghost-btn{
+    display:inline-flex;
+    align-items:center;
+    padding:14px 24px;
+    border:1px solid rgba(242,237,225,0.4);
+    color:var(--paper);
+    text-decoration:none;
+    font-family:'Courier Prime', monospace;
+    font-size:0.82rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    border-radius:1px;
+    transition:all 0.25s ease;
+  }
+  .ghost-btn:hover{ background:rgba(242,237,225,0.08); border-color:var(--paper); }
+
+  .hero-photo{
+    position:relative;
+    z-index:2;
+  }
+  .hero-photo-frame{
+    position:relative;
+    border:1px solid rgba(242,237,225,0.25);
+    padding:14px;
+    opacity:0;
+    animation:fadeUp 1s ease 0.5s forwards;
+  }
+  .hero-photo-frame img{
+    width:100%;
+    height:520px;
+    object-fit:cover;
+    filter:saturate(0.95) contrast(1.02);
+  }
+  .hero-photo-caption{
+    position:absolute;
+    bottom:-1px; left:14px;
+    background:var(--brass);
+    color:var(--ink);
+    font-family:'Courier Prime', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:6px 12px;
+    transform:translateY(50%);
+  }
+
+  .scroll-cue{
+    position:absolute;
+    bottom:28px; left:28px;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:rgba(242,237,225,0.55);
+    font-family:'Courier Prime', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+  }
+  .scroll-cue .bar{
+    width:1px; height:34px;
+    background:rgba(242,237,225,0.35);
+    position:relative;
+    overflow:hidden;
+  }
+  .scroll-cue .bar::after{
+    content:"";
+    position:absolute;
+    top:-100%; left:0; right:0; height:100%;
+    background:var(--brass-bright);
+    animation:scrollDown 1.8s ease-in-out infinite;
+  }
+  @keyframes scrollDown{
+    0%{ top:-100%;}
+    50%{ top:100%;}
+    100%{ top:100%;}
+  }
+
+  /* ---------- SECTION COMMON ---------- */
+  section{ padding:110px 0; position:relative; }
+  .section-head{
+    margin-bottom:56px;
+    max-width:640px;
+  }
+  .section-head .eyebrow{ margin-bottom:14px; display:block; }
+  .section-head h2{
+    font-size:clamp(1.9rem, 3.4vw, 2.7rem);
+    line-height:1.15;
+  }
+  .section-head p{
+    margin-top:16px;
+    font-size:1.02rem;
+    line-height:1.6;
+    color:var(--ink-soft);
+  }
+
+  .rule{
+    border:none;
+    border-top:1px solid var(--line);
+    margin:0;
+  }
+
+  /* ---------- GALLERY / GUEST FAVOURITE STRIP ---------- */
+  .favorite-strip{
+    background:var(--parchment);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:46px 0;
+  }
+  .favorite-strip .wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:40px;
+    flex-wrap:wrap;
+  }
+  .favorite-block{ display:flex; align-items:center; gap:18px; }
+  .favorite-badge{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:2.2rem;
+    color:var(--teal-deep);
+    border:2px solid var(--teal-deep);
+    border-radius:50%;
+    width:74px; height:74px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .favorite-text b{ font-size:1.08rem; display:block; }
+  .favorite-text span{ color:var(--ink-soft); font-size:0.9rem; }
+  .favorite-stats{ display:flex; gap:36px; flex-wrap:wrap; }
+  .favorite-stats .fs{ text-align:left; }
+  .favorite-stats .fs b{ font-family:'Fraunces', serif; font-size:1.3rem; display:block; }
+  .favorite-stats .fs span{ font-size:0.74rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--ink-soft); }
+
+  /* ---------- GALLERY ---------- */
+  .gallery{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    grid-template-rows:240px 240px;
+    gap:10px;
+  }
+  .gallery img{ width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease; }
+  .gallery a{ overflow:hidden; display:block; position:relative; }
+  .gallery a:hover img{ transform:scale(1.05); }
+  .gallery a:nth-child(1){ grid-column:1 / 3; grid-row:1 / 3; }
+  .gallery a:nth-child(2){ grid-column:3 / 4; grid-row:1; }
+  .gallery a:nth-child(3){ grid-column:4 / 5; grid-row:1; }
+  .gallery a:nth-child(4){ grid-column:3 / 4; grid-row:2; }
+  .gallery a:nth-child(5){ grid-column:4 / 5; grid-row:2; }
+
+  /* ---------- HIGHLIGHTS ---------- */
+  .highlights{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .highlight-card{
+    background:var(--paper);
+    padding:38px 32px;
+  }
+  .highlight-card .num{
+    font-family:'Courier Prime', monospace;
+    color:var(--brass);
+    font-size:0.78rem;
+    letter-spacing:0.08em;
+  }
+  .highlight-card h3{
+    margin-top:14px;
+    font-size:1.25rem;
+  }
+  .highlight-card p{
+    margin-top:10px;
+    color:var(--ink-soft);
+    line-height:1.6;
+    font-size:0.95rem;
+  }
+
+  /* ---------- SLEEPING / LAYOUT ---------- */
+  .layout-section{
+    background:var(--ink);
+    color:var(--paper);
+  }
+  .layout-grid{
+    display:grid;
+    grid-template-columns:0.85fr 1.15fr;
+    gap:60px;
+    align-items:start;
+  }
+  .layout-section .section-head h2{ color:var(--paper); }
+  .layout-section .section-head p{ color:rgba(242,237,225,0.72); }
+  .room-list{ list-style:none; margin:0; padding:0; }
+  .room-list li{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding:18px 0;
+    border-bottom:1px solid rgba(242,237,225,0.15);
+    font-family:'Fraunces', serif;
+    font-size:1.1rem;
+  }
+  .room-list li span{
+    font-family:'Courier Prime', monospace;
+    font-size:0.78rem;
+    color:rgba(242,237,225,0.55);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+  }
+  .layout-photo{ position:relative; }
+  .layout-photo img{
+    width:100%;
+    height:480px;
+    object-fit:cover;
+  }
+
+  /* ---------- AMENITIES "PROGRAM" ---------- */
+  .program{
+    background:var(--parchment);
+  }
+  .program-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:0;
+    border-top:1px solid var(--line);
+  }
+  .program-item{
+    padding:22px 8px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:0.98rem;
+  }
+  .program-item:nth-child(3n+1){ padding-left:0; }
+  .program-item:nth-child(3n+2), .program-item:nth-child(3n){ padding-left:28px; }
+  .program-item .tag{
+    font-family:'Courier Prime', monospace;
+    font-size:0.68rem;
+    color:var(--teal-deep);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+  }
+
+  /* ---------- LOCATION ---------- */
+  .location-section{}
+  .location-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:60px;
+    align-items:center;
+  }
+  .location-list{ list-style:none; margin:24px 0 0; padding:0; }
+  .location-list li{
+    padding:16px 0;
+    border-top:1px solid var(--line);
+    display:flex;
+    gap:16px;
+    align-items:baseline;
+  }
+  .location-list li .dist{
+    font-family:'Courier Prime', monospace;
+    font-size:0.78rem;
+    color:var(--brass);
+    min-width:64px;
+  }
+  .location-photo img{
+    width:100%;
+    height:420px;
+    object-fit:cover;
+  }
+
+  /* ---------- REVIEWS ---------- */
+  .reviews-section{ background:var(--ink-soft); color:var(--paper); }
+  .reviews-section .section-head h2{ color:var(--paper); }
+  .reviews-section .section-head p{ color:rgba(242,237,225,0.72); }
+  .review-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:28px;
+  }
+  .review-card{
+    background:rgba(242,237,225,0.06);
+    border:1px solid rgba(242,237,225,0.14);
+    padding:28px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .review-card .stars{ color:var(--brass-bright); font-family:'Courier Prime', monospace; letter-spacing:2px;}
+  .review-card p{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.05rem;
+    line-height:1.55;
+    color:rgba(242,237,225,0.92);
+    margin:0;
+  }
+  .review-card .who{
+    font-family:'Courier Prime', monospace;
+    font-size:0.74rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:rgba(242,237,225,0.55);
+    margin-top:auto;
+  }
+  .rating-bars{
+    margin-top:50px;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:28px 50px;
+  }
+  .rbar{ }
+  .rbar-top{ display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:8px; }
+  .rbar-top b{ font-family:'Fraunces', serif; }
+  .rbar-track{ height:3px; background:rgba(242,237,225,0.18); border-radius:2px; overflow:hidden; }
+  .rbar-fill{ height:100%; background:var(--brass-bright); border-radius:2px; }
+
+  /* ---------- HOST ---------- */
+  .host-section{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:50px;
+    align-items:center;
+  }
+  .host-photo{
+    width:100%;
+    aspect-ratio:1;
+    border-radius:50%;
+    object-fit:cover;
+    border:1px solid var(--line);
+  }
+  .host-stats{ display:flex; gap:30px; margin-top:22px; flex-wrap:wrap; }
+  .host-stats .hs b{ font-family:'Fraunces', serif; font-size:1.4rem; display:block; }
+  .host-stats .hs span{ font-size:0.74rem; text-transform:uppercase; color:var(--ink-soft); letter-spacing:0.06em; }
+
+  /* ---------- BOOK CTA ---------- */
+  .book-section{
+    background:var(--teal-deep);
+    color:var(--paper);
+    text-align:center;
+    padding:120px 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .book-section::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 30px);
+  }
+  .book-section .eyebrow{ color:var(--brass-bright); }
+  .book-section h2{
+    font-size:clamp(2.2rem, 4.2vw, 3.4rem);
+    color:var(--paper);
+    margin-top:16px;
+    position:relative; z-index:2;
+  }
+  .book-section p{
+    max-width:480px;
+    margin:20px auto 0;
+    color:rgba(242,237,225,0.78);
+    line-height:1.6;
+    position:relative; z-index:2;
+  }
+  .book-section .ticket-btn{
+    margin-top:38px;
+    position:relative; z-index:2;
+    font-size:0.92rem;
+    padding:18px 32px;
+  }
+  .book-note{
+    margin-top:20px;
+    font-family:'Courier Prime', monospace;
+    font-size:0.78rem;
+    color:rgba(242,237,225,0.55);
+    position:relative; z-index:2;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    background:var(--ink);
+    color:rgba(242,237,225,0.6);
+    padding:50px 0 36px;
+    font-size:0.85rem;
+  }
+  .footer-grid{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:20px;
+  }
+  .footer-mark{
+    font-family:'Fraunces', serif;
+    color:var(--paper);
+    font-size:1.1rem;
+  }
+  footer .rule{ border-top:1px solid rgba(242,237,225,0.12); margin:30px 0 24px; }
+  .footer-fine{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:0.76rem; }
+  .footer-fine a{ text-decoration:none; opacity:0.8; }
+  .footer-fine a:hover{ opacity:1; }
+
+  /* ---------- REVEAL ON SCROLL ---------- */
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 920px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-photo{ display:none; }
+    .layout-grid, .location-grid, .host-section{ grid-template-columns:1fr; }
+    .layout-photo img, .location-photo img{ height:320px; }
+    .highlights{ grid-template-columns:1fr; }
+    .program-grid{ grid-template-columns:1fr; }
+    .program-item:nth-child(3n+2), .program-item:nth-child(3n){ padding-left:0; }
+    .review-grid{ grid-template-columns:1fr; }
+    .rating-bars{ grid-template-columns:repeat(2, 1fr); }
+    .gallery{ grid-template-columns:repeat(2, 1fr); grid-template-rows:repeat(3, 200px); }
+    .gallery a:nth-child(1){ grid-column:1/3; grid-row:1/2; }
+    .gallery a:nth-child(2){ grid-column:1/2; grid-row:2/3;}
+    .gallery a:nth-child(3){ grid-column:2/3; grid-row:2/3;}
+    .gallery a:nth-child(4){ grid-column:1/2; grid-row:3/4;}
+    .gallery a:nth-child(5){ grid-column:2/3; grid-row:3/4;}
+    .favorite-strip .wrap{ justify-content:center; text-align:center; }
+    .favorite-stats{ justify-content:center; }
+    .nav-links{ display:none; }
+  }
+  @media (max-width: 600px){
+    section{ padding:70px 0; }
+    .hero{ padding-top:110px; }
+    .hero-meta{ gap:20px; }
+    .footer-fine{ flex-direction:column; }
+  }
+
+  :focus-visible{
+    outline:2px solid var(--brass);
+    outline-offset:3px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-mark"><span class="dot"></span> Stratford Retreat</div>
+  <div class="nav-links">
+    <a href="#gallery">Gallery</a>
+    <a href="#rooms">Rooms</a>
+    <a href="#amenities">Amenities</a>
+    <a href="#location">Location</a>
+    <a href="#reviews">Reviews</a>
+  </div>
+  <a class="nav-cta" href="https://airbnb.com/h/stratfordretreat" target="_blank" rel="noopener">Check Dates</a>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="playbill">Stratford, Ontario <span class="sep">·</span> Entire Home <span class="sep">·</span> Guest Favourite</div>
+      <h1>A family home,<br><em>centre stage</em><br>in Stratford.</h1>
+      <p class="hero-sub">Four bedrooms, free parking, and a five-minute stroll to the Avon River and the Festival theatres — stratfordstay.ca is the easiest seat in the house.</p>
+      <div class="hero-meta">
+        <div class="stat"><b>4.74</b><span>Rating · 23 reviews</span></div>
+        <div class="stat"><b>6</b><span>Guests</span></div>
+        <div class="stat"><b>4 / 2.5</b><span>Beds / Baths</span></div>
+      </div>
+      <div class="hero-ctas">
+        <a class="ticket-btn" href="https://airbnb.com/h/stratfordretreat" target="_blank" rel="noopener">
+          <span>Book on Airbnb</span><span class="stub-line">Admit 6</span>
+        </a>
+        <a class="ghost-btn" href="#gallery">View the Gallery</a>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <div class="hero-photo-frame">
+        <img src="https://a0.muscache.com/im/pictures/miso/Hosting-872204350725677029/original/039083d2-c5af-4dac-a268-b332811474e7.jpeg?im_w=720" alt="Living room of the Stratford Retreat home">
+        <div class="hero-photo-caption">Now Showing — The Living Room</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue"><div class="bar"></div> Scroll</div>
+</header>
+
+<section class="favorite-strip reveal">
+  <div class="wrap">
+    <div class="favorite-block">
+      <div class="favorite-badge">4.7</div>
+      <div class="favorite-text">
+        <b>Guest favourite</b>
+        <span>Top-rated based on ratings, reviews, and reliability</span>
+      </div>
+    </div>
+    <div class="favorite-stats">
+      <div class="fs"><b>3 yrs</b><span>Hosting</span></div>
+      <div class="fs"><b>100%</b><span>Response rate</span></div>
+      <div class="fs"><b>&lt; 1 hr</b><span>Response time</span></div>
+      <div class="fs"><b>23</b><span>Reviews</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Act I</span>
+      <h2>The house, in five frames.</h2>
+      <p>A bright, family-sized home a few streets back from downtown Stratford — close enough to walk to dinner and a show, quiet enough to actually sleep after.</p>
+    </div>
+    <div class="gallery reveal">
+      <a href="https://airbnb.com/h/stratfordretreat" target="_blank" rel="noopener"><img src="https://a0.muscache.com/im/pictures/miso/Hosting-872204350725677029/original/039083d2-c5af-4dac-a268-b332811474e7.jpeg?im_w=720" alt="Living room"></a>
+      <a href="https://airbnb.com/h/stratfordretreat" target="_blank" rel="noopener"><img src="https://a0.muscache.com/im/pictures/25cf2685-99ac-4c74-b2f2-28212f3f1803.jpg?im_w=720" alt="Bedroom"></a>
+      <a href="https://airbnb.com/h/stratfordretreat" target="_blank" rel="noopener"><img src="https://a0.muscache.com/im/pictures/79a18b28-d75b-4f7f-ac0e-3272d28a4cf5.jpg?im_w=720" alt="Kitchen"></a>
+      <a href="https://airbnb.com/h/stratfordretreat" target="_blank" rel="noopener"><img src="https://a0.muscache.com/im/pictures/760876b8-9c01-4e08-8aa6-cf3e438b40a1.jpg?im_w=720" alt="Dining area"></a>
+      <a href="https://airbnb.com/h/stratfordretreat" target="_blank" rel="noopener"><img src="https://a0.muscache.com/im/pictures/74a74980-f784-48f3-9edb-a618777e4185.jpg?im_w=720" alt="Backyard"></a>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <hr class="rule reveal">
+    <div class="highlights reveal" style="margin-top:60px;">
+      <div class="highlight-card">
+        <div class="num">01</div>
+        <h3>Self check-in</h3>
+        <p>Keypad entry, no waiting around. Walk in whenever your train, flight, or four-hour drive gets you here.</p>
+      </div>
+      <div class="highlight-card">
+        <div class="num">02</div>
+        <h3>Unbeatable location</h3>
+        <p>100% of guests rated the location five stars last year. Downtown, the river, and the Festival theatres are all close by.</p>
+      </div>
+      <div class="highlight-card">
+        <div class="num">03</div>
+        <h3>Park for free</h3>
+        <p>One of the few stays in the area with free on-site parking — no permits, no circling the block.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rooms" class="layout-section">
+  <div class="wrap">
+    <div class="layout-grid">
+      <div>
+        <div class="section-head reveal" style="margin-bottom:36px;">
+          <span class="eyebrow">Act II</span>
+          <h2>Where you'll sleep.</h2>
+          <p>Room enough for the whole group to spread out, and enough beds that nobody has to draw straws.</p>
+        </div>
+        <ul class="room-list reveal">
+          <li>3 Queen beds <span>Bedrooms 1–3</span></li>
+          <li>1 Double bed <span>Bedroom 4</span></li>
+          <li>2.5 Bathrooms <span>Private</span></li>
+          <li>Sleeps 6 <span>Max guests</span></li>
+        </ul>
+      </div>
+      <div class="layout-photo reveal">
+        <img src="https://a0.muscache.com/im/pictures/b6f76ec4-2811-4afa-a4a4-3add1d01e21c.jpg?im_w=720" alt="Bedroom with queen bed">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="amenities" class="program">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The Program</span>
+      <h2>Everything that's included.</h2>
+      <p>The essentials, handled — so the only thing left to plan is dinner reservations.</p>
+    </div>
+    <div class="program-grid reveal">
+      <div class="program-item"><span>Full kitchen</span><span class="tag">Stay In</span></div>
+      <div class="program-item"><span>Wifi</span><span class="tag">Connect</span></div>
+      <div class="program-item"><span>Dedicated workspace</span><span class="tag">Work</span></div>
+      <div class="program-item"><span>Free on-site parking</span><span class="tag">Arrive</span></div>
+      <div class="program-item"><span>TV</span><span class="tag">Unwind</span></div>
+      <div class="program-item"><span>Self check-in (keypad)</span><span class="tag">Arrive</span></div>
+      <div class="program-item"><span>Carbon monoxide alarm</span><span class="tag">Safety</span></div>
+      <div class="program-item"><span>Smoke alarm</span><span class="tag">Safety</span></div>
+      <div class="program-item"><span>Backyard</span><span class="tag">Outdoors</span></div>
+    </div>
+    <p style="margin-top:24px;"><a href="https://airbnb.com/h/stratfordretreat" target="_blank" rel="noopener" style="text-decoration:underline; color:var(--teal-deep); font-size:0.92rem;">See all 24 amenities on Airbnb →</a></p>
+  </div>
+</section>
+
+<section id="location" class="location-section">
+  <div class="wrap">
+    <div class="location-grid">
+      <div>
+        <div class="section-head reveal" style="margin-bottom:0;">
+          <span class="eyebrow">Act III</span>
+          <h2>Stratford, Ontario.</h2>
+          <p>Best known for the Stratford Festival's theatres and the swans on the Avon River — a small city built for walking, with the house tucked into a quiet family neighbourhood nearby.</p>
+        </div>
+        <ul class="location-list reveal">
+          <li><span class="dist">~5 min</span> Walk to downtown Stratford and the Avon River</li>
+          <li><span class="dist">~5 min</span> Drive to the Festival Theatre</li>
+          <li><span class="dist">On-site</span> Free private parking</li>
+          <li><span class="dist">Exact</span> Address shared after booking</li>
+        </ul>
+      </div>
+      <div class="location-photo reveal">
+        <img src="https://a0.muscache.com/im/pictures/79a18b28-d75b-4f7f-ac0e-3272d28a4cf5.jpg?im_w=720" alt="Stratford Ontario neighbourhood">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="reviews" class="reviews-section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Reviews</span>
+      <h2>What guests are saying.</h2>
+      <p>4.74 out of 5, across 23 reviews — a guest favourite for ratings, reliability, and an unbeatable location.</p>
+    </div>
+    <div class="review-grid reveal">
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <p>"Exactly what we needed for a long weekend with the family — comfortable beds, an easy walk to dinner, and check-in was effortless."</p>
+        <div class="who">Guest review</div>
+      </div>
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <p>"The location is the whole story — five minutes from the theatre and the river, and free parking made arriving simple."</p>
+        <div class="who">Guest review</div>
+      </div>
+      <div class="review-card">
+        <div class="stars">★★★★☆</div>
+        <p>"Spacious, clean, and quiet. The kitchen had everything we needed to cook for the group after a day of sightseeing."</p>
+        <div class="who">Guest review</div>
+      </div>
+    </div>
+    <div class="rating-bars reveal">
+      <div class="rbar"><div class="rbar-top"><span>Cleanliness</span><b>4.7</b></div><div class="rbar-track"><div class="rbar-fill" style="width:94%;"></div></div></div>
+      <div class="rbar"><div class="rbar-top"><span>Accuracy</span><b>4.8</b></div><div class="rbar-track"><div class="rbar-fill" style="width:96%;"></div></div></div>
+      <div class="rbar"><div class="rbar-top"><span>Check-in</span><b>4.8</b></div><div class="rbar-track"><div class="rbar-fill" style="width:96%;"></div></div></div>
+      <div class="rbar"><div class="rbar-top"><span>Communication</span><b>4.9</b></div><div class="rbar-track"><div class="rbar-fill" style="width:98%;"></div></div></div>
+      <div class="rbar"><div class="rbar-top"><span>Location</span><b>5.0</b></div><div class="rbar-track"><div class="rbar-fill" style="width:100%;"></div></div></div>
+      <div class="rbar"><div class="rbar-top"><span>Value</span><b>4.6</b></div><div class="rbar-track"><div class="rbar-fill" style="width:92%;"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="host">
+  <div class="wrap">
+    <div class="host-section reveal">
+      <img class="host-photo" src="https://a0.muscache.com/im/pictures/user/User-496036925/original/b16ff7dc-0908-4149-b86d-9a42ada8f760.jpeg?im_w=720" alt="Host Nava">
+      <div>
+        <span class="eyebrow">Your Host</span>
+        <h2 style="margin-top:14px; font-size:1.8rem;">Hosted by Nava</h2>
+        <p style="margin-top:12px; color:var(--ink-soft); line-height:1.6; max-width:520px;">Three years of hosting in Stratford, with a 100% response rate and replies typically within the hour. Message anytime through Airbnb with questions about the house or the neighbourhood.</p>
+        <div class="host-stats">
+          <div class="hs"><b>3 yrs</b><span>Hosting</span></div>
+          <div class="hs"><b>23</b><span>Reviews</span></div>
+          <div class="hs"><b>4.74</b><span>Rating</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="book-section">
+  <div class="wrap">
+    <span class="eyebrow">Final Curtain</span>
+    <h2>Ready to book your stay?</h2>
+    <p>Check dates, see current pricing, and message the host directly — all through Airbnb's secure booking.</p>
+    <a class="ticket-btn" href="https://airbnb.com/h/stratfordretreat" target="_blank" rel="noopener">
+      <span>Reserve on Airbnb</span><span class="stub-line">stratfordstay.ca</span>
+    </a>
+    <div class="book-note">Always book and pay through Airbnb to stay protected by AirCover.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-mark">Stratford Retreat</div>
+      <div class="nav-links" style="display:flex;">
+        <a href="#gallery" style="text-decoration:none; margin-right:24px; font-size:0.85rem;">Gallery</a>
+        <a href="#rooms" style="text-decoration:none; margin-right:24px; font-size:0.85rem;">Rooms</a>
+        <a href="#location" style="text-decoration:none; margin-right:24px; font-size:0.85rem;">Location</a>
+        <a href="#reviews" style="text-decoration:none; font-size:0.85rem;">Reviews</a>
+      </div>
+    </div>
+    <hr class="rule">
+    <div class="footer-fine">
+      <span>stratfordstay.ca · Independently run, listed on Airbnb.</span>
+      <a href="https://airbnb.com/h/stratfordretreat" target="_blank" rel="noopener">View official listing on Airbnb →</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    if(window.scrollY > 40){ nav.classList.add('scrolled'); }
+    else{ nav.classList.remove('scrolled'); }
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
