@@ -1393,8 +1393,10 @@
       ['guestName','guestEmail','guestPhone','guestMsg'].forEach(id=>document.getElementById(id).value='');
       checkinDate=null; checkoutDate=null; updateForm(); renderCal();
     } catch(err) {
+      console.error('EmailJS error:', err);
       status.style.color = '#ff7070';
-      status.textContent = 'Could not send — please email nnavex@gmail.com directly.';
+      const errMsg = err?.text || err?.message || JSON.stringify(err) || 'Unknown error';
+      status.textContent = 'Error: ' + errMsg;
       bfSubmit.disabled = false;
     }
   });
