@@ -739,8 +739,10 @@
     gap:4px;
   }
   .cal-cell{
-    aspect-ratio:1;
+    aspect-ratio:unset;
+    height:52px;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
     font-size:0.85rem;
@@ -761,6 +763,10 @@
   .cal-cell.cal-inrange{ background:rgba(184,147,90,0.22); border-color:rgba(184,147,90,0.3); }
   .cal-cell.cal-empty{ background:transparent; border:none; cursor:default; }
   .cal-cell.cal-today{ border-color:rgba(242,237,225,0.4); }
+  .cal-num{ display:block; font-size:0.85rem; line-height:1.2; }
+  .cal-price{ display:block; font-size:0.58rem; color:var(--brass-bright); font-family:'Courier Prime',monospace; line-height:1; margin-top:1px; }
+  .cal-cell.cal-checkin .cal-price, .cal-cell.cal-checkout .cal-price{ color:var(--ink); opacity:0.7; }
+  .cal-cell.cal-inrange .cal-price{ color:var(--brass); }
   .cal-legend{
     display:flex;
     gap:16px;
@@ -1151,44 +1157,59 @@
   </div>
 </section>
 
-<section id="book" class="book-section" style="padding:100px 0; text-align:left;">
+<section id="book" class="book-section" style="padding:80px 0; text-align:left;">
   <div class="wrap">
-    <div class="section-head reveal" style="max-width:100%; margin-bottom:50px;">
+    <div class="section-head reveal" style="max-width:100%; margin-bottom:40px;">
       <span class="eyebrow" style="color:var(--brass-bright);">Final Curtain</span>
       <h2 style="color:var(--paper); font-size:clamp(2rem,3.6vw,3rem);">Check availability &amp; book direct.</h2>
-      <p style="color:rgba(242,237,225,0.72); max-width:560px;">Pick your dates below, fill in your details, and your request goes straight to Nava. Book direct and skip the Airbnb service fees.</p>
+      <p style="color:rgba(242,237,225,0.72); max-width:560px;">Pick your dates, see the price, fill in your details — your request goes straight to Nava. No service fees.</p>
     </div>
 
     <div class="booking-layout">
-      <!-- CALENDAR -->
+      <!-- CALENDAR PANEL -->
       <div class="cal-wrap reveal">
+
+        <!-- Month navigation -->
         <div class="cal-header">
           <button class="cal-nav" id="calPrev">&#8592;</button>
           <span class="cal-month-label" id="calLabel"></span>
           <button class="cal-nav" id="calNext">&#8594;</button>
         </div>
+
+        <!-- Day names -->
         <div class="cal-grid">
           <div class="cal-day-name">Su</div><div class="cal-day-name">Mo</div>
           <div class="cal-day-name">Tu</div><div class="cal-day-name">We</div>
           <div class="cal-day-name">Th</div><div class="cal-day-name">Fr</div>
           <div class="cal-day-name">Sa</div>
         </div>
+
+        <!-- Days -->
         <div class="cal-days" id="calDays"></div>
+
+        <!-- Legend -->
         <div class="cal-legend">
-          <span><span class="leg-dot" style="background:var(--brass);"></span> Check-in</span>
-          <span><span class="leg-dot" style="background:rgba(184,147,90,0.35);"></span> Selected range</span>
-          <span><span class="leg-dot" style="background:rgba(242,237,225,0.15); border:1px solid rgba(242,237,225,0.2);"></span> Available</span>
-          <span><span class="leg-dot" style="background:rgba(255,80,80,0.35);"></span> Booked</span>
+          <span><span class="leg-dot" style="background:var(--brass);"></span> Selected</span>
+          <span><span class="leg-dot" style="background:rgba(184,147,90,0.3);"></span> Range</span>
+          <span><span class="leg-dot" style="background:rgba(255,80,80,0.3);"></span> Unavailable</span>
         </div>
         <p class="cal-hint" id="calHint">Select your check-in date</p>
 
-        <!-- BLOCKED DATES MANAGER (host only) -->
-        <div class="blocked-manager">
-          <div class="bm-toggle" id="bmToggle">&#9881; Manage blocked dates</div>
-          <div class="bm-panel" id="bmPanel" style="display:none;">
-            <p style="font-size:0.8rem; color:rgba(242,237,225,0.6); margin:0 0 10px;">Click dates on the calendar to toggle blocked/available. Changes save in your browser.</p>
-            <button class="bm-clear" id="bmClear">Clear all blocked dates</button>
+        <!-- Price summary shown after dates selected -->
+        <div id="priceSummary" style="display:none; margin-top:16px; padding:16px; background:rgba(184,147,90,0.1); border:1px solid rgba(184,147,90,0.3); border-radius:2px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span style="font-size:0.9rem; color:rgba(242,237,225,0.75);" id="pricePerNight"></span>
+            <span style="font-family:'Fraunces',serif; color:var(--paper);" id="priceSubtotal"></span>
           </div>
+          <div style="display:flex; justify-content:space-between; padding-top:10px; border-top:1px solid rgba(242,237,225,0.15);">
+            <span style="font-family:'Courier Prime',monospace; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--brass-bright);">Total</span>
+            <span style="font-family:'Fraunces',serif; font-size:1.3rem; color:var(--brass-bright);" id="priceTotal"></span>
+          </div>
+        </div>
+
+        <!-- Admin link -->
+        <div style="margin-top:18px; border-top:1px solid rgba(242,237,225,0.1); padding-top:14px;">
+          <span id="adminLink" style="font-family:'Courier Prime',monospace; font-size:0.72rem; color:rgba(242,237,225,0.3); cursor:pointer; letter-spacing:0.04em;">&#9881; Host admin</span>
         </div>
       </div>
 
@@ -1210,7 +1231,6 @@
               <span id="bfNights" class="bf-date-val">—</span>
             </div>
           </div>
-
           <div class="bf-field">
             <label class="bf-label">Full name</label>
             <input class="bf-input" type="text" id="guestName" placeholder="Jane Smith" required>
@@ -1226,29 +1246,149 @@
           <div class="bf-field">
             <label class="bf-label">Number of guests</label>
             <select class="bf-input" id="guestCount">
-              <option>1 guest</option>
-              <option>2 guests</option>
-              <option>3 guests</option>
-              <option>4 guests</option>
-              <option>5 guests</option>
-              <option>6 guests</option>
+              <option>1 guest</option><option>2 guests</option><option>3 guests</option>
+              <option>4 guests</option><option>5 guests</option><option>6 guests</option>
             </select>
           </div>
           <div class="bf-field">
             <label class="bf-label">Message to host (optional)</label>
             <textarea class="bf-input" id="guestMsg" rows="3" placeholder="Tell us a little about your stay..."></textarea>
           </div>
-
           <button class="bf-submit ticket-btn" id="bfSubmit" style="width:100%; justify-content:center; margin-top:6px;" disabled>
             <span>Send Booking Request</span><span class="stub-line">→</span>
           </button>
           <div id="bfStatus" style="margin-top:14px; font-family:'Courier Prime',monospace; font-size:0.82rem; text-align:center; min-height:22px;"></div>
-          <p style="margin-top:16px; font-size:0.78rem; color:rgba(242,237,225,0.45); text-align:center; font-family:'Courier Prime',monospace;">Your request goes directly to the host. No booking fees.</p>
+          <p style="margin-top:16px; font-size:0.78rem; color:rgba(242,237,225,0.45); text-align:center; font-family:'Courier Prime',monospace;">Direct booking — no service fees.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- ═══════════════════════════════════════════════
+     ADMIN PANEL (password protected, fixed overlay)
+     ═══════════════════════════════════════════════ -->
+<div id="adminOverlay" style="display:none; position:fixed; inset:0; z-index:2000; background:rgba(27,36,48,0.97); backdrop-filter:blur(8px); overflow-y:auto; padding:40px 20px;">
+  <div style="max-width:720px; margin:0 auto;">
+
+    <!-- Login screen -->
+    <div id="adminLogin">
+      <h2 style="font-family:'Fraunces',serif; color:var(--paper); margin:0 0 8px;">Host Admin</h2>
+      <p style="color:rgba(242,237,225,0.55); font-size:0.9rem; margin:0 0 28px;">Enter your admin password to manage pricing and availability.</p>
+      <input id="adminPwInput" type="password" placeholder="Password" style="
+        background:rgba(242,237,225,0.08); border:1px solid rgba(242,237,225,0.25);
+        color:var(--paper); padding:12px 16px; font-size:1rem; width:100%;
+        border-radius:2px; outline:none; margin-bottom:12px; box-sizing:border-box;
+      ">
+      <div style="display:flex; gap:12px;">
+        <button id="adminLoginBtn" style="
+          background:var(--brass); color:var(--ink); border:none; padding:12px 24px;
+          font-family:'Courier Prime',monospace; font-size:0.82rem; text-transform:uppercase;
+          letter-spacing:0.06em; cursor:pointer; border-radius:2px; flex:1;
+        ">Login</button>
+        <button id="adminCancelLogin" style="
+          background:none; color:rgba(242,237,225,0.5); border:1px solid rgba(242,237,225,0.2);
+          padding:12px 24px; font-family:'Courier Prime',monospace; font-size:0.82rem;
+          text-transform:uppercase; letter-spacing:0.06em; cursor:pointer; border-radius:2px;
+        ">Cancel</button>
+      </div>
+      <p id="adminLoginErr" style="color:#ff7070; font-family:'Courier Prime',monospace; font-size:0.8rem; margin-top:10px; min-height:18px;"></p>
+    </div>
+
+    <!-- Admin dashboard (shown after login) -->
+    <div id="adminDash" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px;">
+        <h2 style="font-family:'Fraunces',serif; color:var(--paper); margin:0;">Host Admin Panel</h2>
+        <button id="adminClose" style="
+          background:none; border:1px solid rgba(242,237,225,0.25); color:rgba(242,237,225,0.7);
+          padding:8px 16px; font-family:'Courier Prime',monospace; font-size:0.78rem;
+          text-transform:uppercase; cursor:pointer; border-radius:2px;
+        ">Close ✕</button>
+      </div>
+
+      <!-- PRICING SECTION -->
+      <div style="background:rgba(242,237,225,0.05); border:1px solid rgba(242,237,225,0.12); padding:24px; margin-bottom:24px; border-radius:2px;">
+        <h3 style="font-family:'Fraunces',serif; color:var(--paper); margin:0 0 20px; font-size:1.2rem;">💰 Pricing</h3>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+          <div>
+            <label style="font-family:'Courier Prime',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.07em; color:rgba(242,237,225,0.55); display:block; margin-bottom:6px;">Default nightly rate (CAD)</label>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="color:rgba(242,237,225,0.5);">$</span>
+              <input id="priceDefault" type="number" min="0" style="
+                background:rgba(242,237,225,0.08); border:1px solid rgba(242,237,225,0.2);
+                color:var(--paper); padding:10px 12px; font-size:1rem; border-radius:2px;
+                outline:none; width:100%;
+              ">
+            </div>
+          </div>
+          <div>
+            <label style="font-family:'Courier Prime',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.07em; color:rgba(242,237,225,0.55); display:block; margin-bottom:6px;">Weekend rate (Fri–Sun, CAD)</label>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="color:rgba(242,237,225,0.5);">$</span>
+              <input id="priceWeekend" type="number" min="0" style="
+                background:rgba(242,237,225,0.08); border:1px solid rgba(242,237,225,0.2);
+                color:var(--paper); padding:10px 12px; font-size:1rem; border-radius:2px;
+                outline:none; width:100%;
+              ">
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom date pricing -->
+        <h4 style="font-family:'Courier Prime',monospace; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--brass-bright); margin:0 0 12px;">Custom date pricing (e.g. Festival weekends)</h4>
+        <div style="display:grid; grid-template-columns:1fr 1fr auto; gap:10px; align-items:end; margin-bottom:12px;">
+          <div>
+            <label style="font-family:'Courier Prime',monospace; font-size:0.68rem; color:rgba(242,237,225,0.45); display:block; margin-bottom:4px;">From date</label>
+            <input id="customFrom" type="date" style="background:rgba(242,237,225,0.08); border:1px solid rgba(242,237,225,0.2); color:var(--paper); padding:9px 10px; border-radius:2px; outline:none; width:100%; font-size:0.9rem;">
+          </div>
+          <div>
+            <label style="font-family:'Courier Prime',monospace; font-size:0.68rem; color:rgba(242,237,225,0.45); display:block; margin-bottom:4px;">To date</label>
+            <input id="customTo" type="date" style="background:rgba(242,237,225,0.08); border:1px solid rgba(242,237,225,0.2); color:var(--paper); padding:9px 10px; border-radius:2px; outline:none; width:100%; font-size:0.9rem;">
+          </div>
+          <div>
+            <label style="font-family:'Courier Prime',monospace; font-size:0.68rem; color:rgba(242,237,225,0.45); display:block; margin-bottom:4px;">$/night</label>
+            <input id="customPrice" type="number" min="0" placeholder="250" style="background:rgba(242,237,225,0.08); border:1px solid rgba(242,237,225,0.2); color:var(--paper); padding:9px 10px; border-radius:2px; outline:none; width:80px; font-size:0.9rem;">
+          </div>
+        </div>
+        <button id="addCustomPrice" style="
+          background:rgba(184,147,90,0.2); border:1px solid var(--brass); color:var(--brass-bright);
+          padding:9px 18px; font-family:'Courier Prime',monospace; font-size:0.78rem;
+          text-transform:uppercase; letter-spacing:0.06em; cursor:pointer; border-radius:2px; margin-bottom:16px;
+        ">+ Add custom rate</button>
+
+        <!-- Custom price list -->
+        <div id="customPriceList" style="margin-bottom:16px;"></div>
+
+        <button id="savePricing" style="
+          background:var(--brass); color:var(--ink); border:none; padding:12px 28px;
+          font-family:'Courier Prime',monospace; font-size:0.82rem; text-transform:uppercase;
+          letter-spacing:0.06em; cursor:pointer; border-radius:2px;
+        ">Save Pricing</button>
+        <span id="priceSaveMsg" style="margin-left:14px; font-family:'Courier Prime',monospace; font-size:0.8rem; color:#7ddc97;"></span>
+      </div>
+
+      <!-- AVAILABILITY SECTION -->
+      <div style="background:rgba(242,237,225,0.05); border:1px solid rgba(242,237,225,0.12); padding:24px; border-radius:2px;">
+        <h3 style="font-family:'Fraunces',serif; color:var(--paper); margin:0 0 8px; font-size:1.2rem;">📅 Availability</h3>
+        <p style="color:rgba(242,237,225,0.55); font-size:0.88rem; margin:0 0 16px;">Click any date on the main calendar to block or unblock it. Blocked dates show in red.</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <button id="adminBlockMode" style="
+            background:rgba(255,80,80,0.15); border:1px solid rgba(255,80,80,0.4); color:rgba(255,140,140,0.9);
+            padding:10px 20px; font-family:'Courier Prime',monospace; font-size:0.78rem;
+            text-transform:uppercase; letter-spacing:0.06em; cursor:pointer; border-radius:2px;
+          ">🔒 Toggle block mode</button>
+          <button id="adminClearBlocked" style="
+            background:none; border:1px solid rgba(242,237,225,0.2); color:rgba(242,237,225,0.6);
+            padding:10px 20px; font-family:'Courier Prime',monospace; font-size:0.78rem;
+            text-transform:uppercase; letter-spacing:0.06em; cursor:pointer; border-radius:2px;
+          ">Clear all blocked dates</button>
+        </div>
+        <p id="blockModeStatus" style="margin-top:12px; font-family:'Courier Prime',monospace; font-size:0.78rem; color:var(--brass-bright); min-height:18px;"></p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <footer>
   <div class="wrap">
@@ -1271,14 +1411,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-  // ── EmailJS init ──────────────────────────────────────────────
-  // SETUP STEPS (one-time, free):
-  // 1. Go to emailjs.com → sign up free
-  // 2. Add Email Service → connect your Gmail (nnavex@gmail.com)
-  // 3. Create Email Template with these variables:
-  //    {{guest_name}}, {{guest_email}}, {{guest_phone}},
-  //    {{checkin}}, {{checkout}}, {{nights}}, {{guests}}, {{message}}
-  // 4. Replace the three strings below with your real IDs:
+  // ── EmailJS ───────────────────────────────────────────────────
   const EMAILJS_PUBLIC_KEY  = 'lo8KgZDc98YCpVQJB';
   const EMAILJS_SERVICE_ID  = 'service_a6wbd52';
   const EMAILJS_TEMPLATE_ID = 'template_1ja1309';
@@ -1286,9 +1419,7 @@
 
   // ── Nav scroll ───────────────────────────────────────────────
   const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 40);
-  });
+  window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 40); });
 
   // ── Scroll reveal ────────────────────────────────────────────
   const io = new IntersectionObserver((entries) => {
@@ -1296,82 +1427,118 @@
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  // ── Calendar ─────────────────────────────────────────────────
-  const STORAGE_KEY = 'stratfordstay_blocked';
-  let blockedDates = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  let blockMode = false;
+  // ── Storage keys ─────────────────────────────────────────────
+  const S_BLOCKED  = 'ss_blocked';
+  const S_PRICING  = 'ss_pricing';
+  const ADMIN_PASS = 'stratford2024!';   // ← change this to your own password
+
+  // ── State ────────────────────────────────────────────────────
+  let blockedDates = JSON.parse(localStorage.getItem(S_BLOCKED) || '[]');
+  let pricing      = JSON.parse(localStorage.getItem(S_PRICING) || '{"default":180,"weekend":220,"custom":[]}');
+  let blockMode    = false;
+  let adminLoggedIn= false;
   let currentYear, currentMonth;
   let checkinDate = null, checkoutDate = null;
 
-  const calDays    = document.getElementById('calDays');
-  const calLabel   = document.getElementById('calLabel');
-  const calHint    = document.getElementById('calHint');
-  const bfCheckin  = document.getElementById('bfCheckin');
-  const bfCheckout = document.getElementById('bfCheckout');
-  const bfNights   = document.getElementById('bfNights');
-  const bfSubmit   = document.getElementById('bfSubmit');
-  const MONTHS = ['January','February','March','April','May','June',
-                  'July','August','September','October','November','December'];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
   function toKey(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
-  function parseKey(k){ const [y,m,d]=k.split('-'); return new Date(+y,+m-1,+d); }
   function sameDay(a,b){ return a&&b&&a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
   function fmt(d){ return d ? `${MONTHS[d.getMonth()].slice(0,3)} ${d.getDate()}, ${d.getFullYear()}` : '—'; }
 
+  // ── Price calculation ─────────────────────────────────────────
+  function getNightPrice(date){
+    const key = toKey(date.getFullYear(), date.getMonth(), date.getDate());
+    // check custom ranges first
+    for(const c of pricing.custom){
+      const from = new Date(c.from + 'T00:00:00');
+      const to   = new Date(c.to   + 'T00:00:00');
+      if(date >= from && date <= to) return c.price;
+    }
+    // weekend (Fri=5, Sat=6, Sun=0)
+    const dow = date.getDay();
+    if(dow === 5 || dow === 6 || dow === 0) return pricing.weekend || pricing.default;
+    return pricing.default;
+  }
+
+  function calcTotal(cin, cout){
+    let total = 0, nights = 0;
+    const d = new Date(cin);
+    while(d < cout){
+      total += getNightPrice(new Date(d));
+      nights++;
+      d.setDate(d.getDate()+1);
+    }
+    return { total, nights };
+  }
+
+  // ── Calendar render ───────────────────────────────────────────
   function renderCal(){
     const now = new Date();
-    calLabel.textContent = `${MONTHS[currentMonth]} ${currentYear}`;
-    const first = new Date(currentYear, currentMonth, 1).getDay();
-    const days  = new Date(currentYear, currentMonth+1, 0).getDate();
+    document.getElementById('calLabel').textContent = `${MONTHS[currentMonth]} ${currentYear}`;
+    const calDays = document.getElementById('calDays');
+    const first   = new Date(currentYear, currentMonth, 1).getDay();
+    const days    = new Date(currentYear, currentMonth+1, 0).getDate();
     calDays.innerHTML = '';
 
-    // empty cells
     for(let i=0;i<first;i++){
       const c=document.createElement('div'); c.className='cal-cell cal-empty'; calDays.appendChild(c);
     }
-    for(let d=1;d<=days;d++){
-      const c = document.createElement('div');
-      c.className = 'cal-cell';
-      c.textContent = d;
-      const key = toKey(currentYear, currentMonth, d);
-      const thisDate = new Date(currentYear, currentMonth, d);
-      const isPast = thisDate < new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const isBlocked = blockedDates.includes(key);
-      const isToday = sameDay(thisDate, now);
-      const isCheckin  = checkinDate  && sameDay(thisDate, checkinDate);
-      const isCheckout = checkoutDate && sameDay(thisDate, checkoutDate);
-      const inRange = checkinDate && checkoutDate && thisDate > checkinDate && thisDate < checkoutDate;
 
-      if(isPast) c.classList.add('cal-past');
+    for(let d=1;d<=days;d++){
+      const c       = document.createElement('div');
+      const thisDate= new Date(currentYear, currentMonth, d);
+      const key     = toKey(currentYear, currentMonth, d);
+      const isPast  = thisDate < new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const isBlocked= blockedDates.includes(key);
+      const isToday = sameDay(thisDate, now);
+      const isCI    = checkinDate  && sameDay(thisDate, checkinDate);
+      const isCO    = checkoutDate && sameDay(thisDate, checkoutDate);
+      const inRange = checkinDate && checkoutDate && thisDate > checkinDate && thisDate < checkoutDate;
+      const price   = getNightPrice(thisDate);
+
+      c.className = 'cal-cell';
+      // show price on available future dates
+      if(!isPast && !isBlocked){
+        c.innerHTML = `<span class="cal-num">${d}</span><span class="cal-price">$${price}</span>`;
+      } else {
+        c.textContent = d;
+      }
+
+      if(isPast)     c.classList.add('cal-past');
       else if(isBlocked) c.classList.add('cal-blocked');
-      else if(isCheckin) c.classList.add('cal-checkin');
-      else if(isCheckout) c.classList.add('cal-checkout');
+      else if(isCI)  c.classList.add('cal-checkin');
+      else if(isCO)  c.classList.add('cal-checkout');
       else if(inRange) c.classList.add('cal-inrange');
-      if(isToday) c.classList.add('cal-today');
+      if(isToday)    c.classList.add('cal-today');
 
       c.addEventListener('click', () => {
-        if(blockMode){
-          // toggle blocked
-          if(blockedDates.includes(key)){ blockedDates=blockedDates.filter(k=>k!==key); }
-          else { blockedDates.push(key); }
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(blockedDates));
+        if(blockMode && adminLoggedIn){
+          blockedDates = blockedDates.includes(key)
+            ? blockedDates.filter(k=>k!==key)
+            : [...blockedDates, key];
+          localStorage.setItem(S_BLOCKED, JSON.stringify(blockedDates));
           renderCal(); return;
         }
         if(isPast||isBlocked) return;
         if(!checkinDate || (checkinDate && checkoutDate)){
-          // start fresh
-          checkinDate = thisDate; checkoutDate = null;
-          calHint.textContent = 'Now select your check-out date';
+          checkinDate=thisDate; checkoutDate=null;
+          document.getElementById('calHint').textContent='Now select your check-out date';
         } else {
-          if(thisDate <= checkinDate){ checkinDate=thisDate; calHint.textContent='Now select your check-out date'; }
-          else {
-            // check no blocked dates in range
-            let blocked=false;
+          if(thisDate <= checkinDate){
+            checkinDate=thisDate;
+          } else {
+            let hasBlocked=false;
             for(let t=new Date(checkinDate.getTime()+86400000); t<thisDate; t=new Date(t.getTime()+86400000)){
-              if(blockedDates.includes(toKey(t.getFullYear(),t.getMonth(),t.getDate()))){ blocked=true; break; }
+              if(blockedDates.includes(toKey(t.getFullYear(),t.getMonth(),t.getDate()))){ hasBlocked=true; break; }
             }
-            if(blocked){ calHint.textContent='⚠ Your range includes unavailable dates. Please reselect.'; checkinDate=null; checkoutDate=null; }
-            else { checkoutDate=thisDate; calHint.textContent='Dates selected — fill in your details below.'; }
+            if(hasBlocked){
+              document.getElementById('calHint').textContent='⚠ Range includes unavailable dates — reselect.';
+              checkinDate=null; checkoutDate=null;
+            } else {
+              checkoutDate=thisDate;
+              document.getElementById('calHint').textContent='Dates selected — fill in your details →';
+            }
           }
         }
         updateForm(); renderCal();
@@ -1381,83 +1548,149 @@
   }
 
   function updateForm(){
-    bfCheckin.textContent  = fmt(checkinDate);
-    bfCheckout.textContent = fmt(checkoutDate);
+    document.getElementById('bfCheckin').textContent  = fmt(checkinDate);
+    document.getElementById('bfCheckout').textContent = fmt(checkoutDate);
+    const ps = document.getElementById('priceSummary');
     if(checkinDate && checkoutDate){
-      const nights = Math.round((checkoutDate - checkinDate)/(1000*60*60*24));
-      bfNights.textContent = nights + (nights===1?' night':' nights');
-      bfSubmit.disabled = false;
+      const {total, nights} = calcTotal(checkinDate, checkoutDate);
+      const avg = Math.round(total/nights);
+      document.getElementById('bfNights').textContent = nights+(nights===1?' night':' nights');
+      document.getElementById('pricePerNight').textContent = `$${avg}/night × ${nights} night${nights===1?'':'s'}`;
+      document.getElementById('priceSubtotal').textContent = `$${total.toLocaleString()} CAD`;
+      document.getElementById('priceTotal').textContent    = `$${total.toLocaleString()} CAD`;
+      ps.style.display='block';
+      document.getElementById('bfSubmit').disabled=false;
     } else {
-      bfNights.textContent = '—';
-      bfSubmit.disabled = true;
+      document.getElementById('bfNights').textContent='—';
+      ps.style.display='none';
+      document.getElementById('bfSubmit').disabled=true;
     }
   }
 
-  // init calendar
-  const now = new Date();
-  currentYear = now.getFullYear(); currentMonth = now.getMonth();
+  // init
+  const now2 = new Date();
+  currentYear=now2.getFullYear(); currentMonth=now2.getMonth();
   renderCal();
 
-  document.getElementById('calPrev').addEventListener('click', () => {
-    currentMonth--; if(currentMonth<0){currentMonth=11;currentYear--;} renderCal();
-  });
-  document.getElementById('calNext').addEventListener('click', () => {
-    currentMonth++; if(currentMonth>11){currentMonth=0;currentYear++;} renderCal();
-  });
+  document.getElementById('calPrev').addEventListener('click', ()=>{ currentMonth--; if(currentMonth<0){currentMonth=11;currentYear--;} renderCal(); });
+  document.getElementById('calNext').addEventListener('click', ()=>{ currentMonth++; if(currentMonth>11){currentMonth=0;currentYear++;} renderCal(); });
 
-  // block mode toggle
-  document.getElementById('bmToggle').addEventListener('click', () => {
-    const panel = document.getElementById('bmPanel');
-    blockMode = !blockMode;
-    panel.style.display = blockMode ? 'block' : 'none';
-    document.getElementById('bmToggle').style.color = blockMode ? 'var(--brass-bright)' : '';
-    calHint.textContent = blockMode ? '🔒 Block mode ON — click dates to toggle availability' : 'Select your check-in date';
-  });
-  document.getElementById('bmClear').addEventListener('click', () => {
-    blockedDates = []; localStorage.setItem(STORAGE_KEY, JSON.stringify(blockedDates)); renderCal();
-  });
-
-  // ── Booking form submit ──────────────────────────────────────
-  bfSubmit.addEventListener('click', async () => {
-    const name  = document.getElementById('guestName').value.trim();
-    const email = document.getElementById('guestEmail').value.trim();
-    const phone = document.getElementById('guestPhone').value.trim();
-    const guests= document.getElementById('guestCount').value;
-    const msg   = document.getElementById('guestMsg').value.trim();
-    const status= document.getElementById('bfStatus');
-
+  // ── Booking form ──────────────────────────────────────────────
+  document.getElementById('bfSubmit').addEventListener('click', async () => {
+    const name   = document.getElementById('guestName').value.trim();
+    const email  = document.getElementById('guestEmail').value.trim();
+    const phone  = document.getElementById('guestPhone').value.trim();
+    const guests = document.getElementById('guestCount').value;
+    const msg    = document.getElementById('guestMsg').value.trim();
+    const status = document.getElementById('bfStatus');
     if(!name||!email){ status.style.color='#ff7070'; status.textContent='Please enter your name and email.'; return; }
-    if(!checkinDate||!checkoutDate){ status.style.color='#ff7070'; status.textContent='Please select your dates first.'; return; }
-
-    bfSubmit.disabled = true;
-    status.style.color = 'var(--brass-bright)';
-    status.textContent = 'Sending your request…';
-
-    const nights = Math.round((checkoutDate-checkinDate)/(1000*60*60*24));
-
+    if(!checkinDate||!checkoutDate){ status.style.color='#ff7070'; status.textContent='Please select dates first.'; return; }
+    document.getElementById('bfSubmit').disabled=true;
+    status.style.color='var(--brass-bright)'; status.textContent='Sending…';
+    const {total, nights} = calcTotal(checkinDate, checkoutDate);
     try {
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        guest_name:  name,
-        guest_email: email,
-        guest_phone: phone || 'Not provided',
-        checkin:     fmt(checkinDate),
-        checkout:    fmt(checkoutDate),
-        nights:      nights,
-        guests:      guests,
-        message:     msg || 'No message',
+        guest_name: name, guest_email: email, guest_phone: phone||'Not provided',
+        checkin: fmt(checkinDate), checkout: fmt(checkoutDate),
+        nights, guests, message: msg||'No message',
+        total_price: `$${total.toLocaleString()} CAD`,
       });
-      status.style.color = '#7ddc97';
-      status.textContent = '✓ Request sent! Nava will reply to ' + email + ' within the hour.';
-      // clear form
+      status.style.color='#7ddc97';
+      status.textContent=`✓ Sent! Nava will reply to ${email} shortly.`;
       ['guestName','guestEmail','guestPhone','guestMsg'].forEach(id=>document.getElementById(id).value='');
       checkinDate=null; checkoutDate=null; updateForm(); renderCal();
-    } catch(err) {
-      console.error('EmailJS error:', err);
-      status.style.color = '#ff7070';
-      const errMsg = err?.text || err?.message || JSON.stringify(err) || 'Unknown error';
-      status.textContent = 'Error: ' + errMsg;
-      bfSubmit.disabled = false;
+    } catch(err){
+      status.style.color='#ff7070';
+      status.textContent='Error: '+(err?.text||err?.message||'Could not send. Email nnavex@gmail.com directly.');
+      document.getElementById('bfSubmit').disabled=false;
     }
+  });
+
+  // ── ADMIN PANEL ───────────────────────────────────────────────
+  const overlay    = document.getElementById('adminOverlay');
+  const loginDiv   = document.getElementById('adminLogin');
+  const dashDiv    = document.getElementById('adminDash');
+
+  document.getElementById('adminLink').addEventListener('click', ()=>{
+    overlay.style.display='block';
+    loginDiv.style.display = adminLoggedIn ? 'none' : 'block';
+    dashDiv.style.display  = adminLoggedIn ? 'block' : 'none';
+    if(adminLoggedIn) loadAdminDash();
+  });
+
+  document.getElementById('adminLoginBtn').addEventListener('click', ()=>{
+    const pw = document.getElementById('adminPwInput').value;
+    if(pw === ADMIN_PASS){
+      adminLoggedIn=true;
+      loginDiv.style.display='none';
+      dashDiv.style.display='block';
+      document.getElementById('adminPwInput').value='';
+      document.getElementById('adminLoginErr').textContent='';
+      loadAdminDash();
+    } else {
+      document.getElementById('adminLoginErr').textContent='Incorrect password.';
+    }
+  });
+  document.getElementById('adminPwInput').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('adminLoginBtn').click(); });
+  document.getElementById('adminCancelLogin').addEventListener('click', ()=>{ overlay.style.display='none'; });
+  document.getElementById('adminClose').addEventListener('click', ()=>{ overlay.style.display='none'; });
+
+  function loadAdminDash(){
+    document.getElementById('priceDefault').value = pricing.default || 180;
+    document.getElementById('priceWeekend').value = pricing.weekend || 220;
+    renderCustomList();
+  }
+
+  function renderCustomList(){
+    const el = document.getElementById('customPriceList');
+    if(!pricing.custom.length){ el.innerHTML='<p style="font-size:0.82rem; color:rgba(242,237,225,0.35); font-family:Courier Prime,monospace;">No custom rates set.</p>'; return; }
+    el.innerHTML = pricing.custom.map((c,i)=>`
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:rgba(184,147,90,0.08); border:1px solid rgba(184,147,90,0.2); border-radius:2px; margin-bottom:6px;">
+        <span style="font-family:'Courier Prime',monospace; font-size:0.82rem; color:rgba(242,237,225,0.8);">${c.from} → ${c.to}</span>
+        <span style="font-family:'Fraunces',serif; color:var(--brass-bright);">$${c.price}/night</span>
+        <button onclick="removeCustom(${i})" style="background:none; border:none; color:rgba(255,100,100,0.7); cursor:pointer; font-size:1rem; padding:0 4px;">✕</button>
+      </div>
+    `).join('');
+  }
+
+  window.removeCustom = function(i){
+    pricing.custom.splice(i,1);
+    localStorage.setItem(S_PRICING, JSON.stringify(pricing));
+    renderCustomList(); renderCal();
+  };
+
+  document.getElementById('addCustomPrice').addEventListener('click', ()=>{
+    const from  = document.getElementById('customFrom').value;
+    const to    = document.getElementById('customTo').value;
+    const price = parseInt(document.getElementById('customPrice').value);
+    if(!from||!to||!price){ return; }
+    pricing.custom.push({from,to,price});
+    localStorage.setItem(S_PRICING, JSON.stringify(pricing));
+    document.getElementById('customFrom').value='';
+    document.getElementById('customTo').value='';
+    document.getElementById('customPrice').value='';
+    renderCustomList(); renderCal();
+  });
+
+  document.getElementById('savePricing').addEventListener('click', ()=>{
+    pricing.default = parseInt(document.getElementById('priceDefault').value) || 180;
+    pricing.weekend = parseInt(document.getElementById('priceWeekend').value) || 220;
+    localStorage.setItem(S_PRICING, JSON.stringify(pricing));
+    renderCal(); updateForm();
+    const msg = document.getElementById('priceSaveMsg');
+    msg.textContent='✓ Saved!';
+    setTimeout(()=>msg.textContent='', 2500);
+  });
+
+  document.getElementById('adminBlockMode').addEventListener('click', ()=>{
+    blockMode=!blockMode;
+    const s = document.getElementById('blockModeStatus');
+    s.textContent = blockMode ? '🔒 Block mode ON — click dates on the calendar to toggle' : '';
+    document.getElementById('adminBlockMode').style.background = blockMode ? 'rgba(255,80,80,0.3)' : 'rgba(255,80,80,0.15)';
+  });
+
+  document.getElementById('adminClearBlocked').addEventListener('click', ()=>{
+    blockedDates=[]; localStorage.setItem(S_BLOCKED, JSON.stringify(blockedDates)); renderCal();
   });
 </script>
 
